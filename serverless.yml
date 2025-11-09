@@ -1,0 +1,28 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: guilhermedcdias10
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: workshop-auth
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs20.x
+  # Uncomment to easily set up a custom domain. Read the docs for more details:
+  # https://www.serverless.com/framework/docs/providers/aws/guide/domains
+  # domain: api.example.com
+  # Using existing LabRole to avoid role creation issues in the Learner Lab
+  role: arn:aws:iam::986945400171:role/LabRole
+  # pegando o profile fiap
+  profile: fiap
+
+  environment:
+    JWT_SECRET: ${env:JWT_SECRET}
+    POSTGRES_URL: ${env:POSTGRES_URL}
+
+functions:
+  api:
+    handler: handler.handler
+    events:
+      - httpApi: "*"
+
+  # No DynamoDB resources — service uses Postgres managed by the monolith
