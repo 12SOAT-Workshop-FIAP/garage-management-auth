@@ -1,0 +1,195 @@
+{
+  "info": {
+    "name": "Workshop Auth API",
+    "description": "Collection for testing authentication endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Register User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('userId', jsonData.userId);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\",\n  \"name\": \"Test User\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["register"]
+        },
+        "description": "Register a new user. Automatically saves userId to collection variable."
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "    const jsonData = pm.response.json();",
+              "    pm.collectionVariables.set('token', jsonData.token);",
+              "    pm.collectionVariables.set('userId', jsonData.userId);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        },
+        "description": "Login with email and password. Automatically saves token to collection variable."
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["me"]
+        },
+        "description": "Get current user profile using JWT token. Requires authentication."
+      },
+      "response": []
+    },
+    {
+      "name": "Get User by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/users/{{userId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["users", "{{userId}}"]
+        },
+        "description": "Get user by userId (compatibility endpoint). No authentication required."
+      },
+      "response": []
+    },
+    {
+      "name": "Register - Already Exists (Error)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\",\n  \"name\": \"Test User\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/register",
+          "host": ["{{baseUrl}}"],
+          "path": ["register"]
+        },
+        "description": "Try to register with existing email - should return 409 Conflict."
+      },
+      "response": []
+    },
+    {
+      "name": "Login - Invalid Credentials (Error)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"WrongPassword\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["login"]
+        },
+        "description": "Try to login with wrong password - should return 401 Unauthorized."
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Profile - No Token (Error)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me",
+          "host": ["{{baseUrl}}"],
+          "path": ["me"]
+        },
+        "description": "Try to access protected route without token - should return 401 Unauthorized."
+      },
+      "response": []
+    }
+  ]
+}

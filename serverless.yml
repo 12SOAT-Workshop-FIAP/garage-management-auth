@@ -3,6 +3,11 @@ org: guilhermedcdias10
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: workshop-auth
 
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   region: us-east-1
