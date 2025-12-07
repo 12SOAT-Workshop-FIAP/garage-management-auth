@@ -1,5 +1,42 @@
-node_modules
-.serverless
+# Dependencies
+node_modules/
 
-.env.dev
-.env.prod
+# Build outputs
+dist/
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Serverless
+.serverless/
+.webpack/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Test
+test-results/
