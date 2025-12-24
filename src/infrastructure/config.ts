@@ -21,7 +21,7 @@ const config: Config = {
   stage,
   usersTable: process.env.USERS_TABLE || `users-table-${stage}`,
   jwtSecret: process.env.JWT_SECRET || 'dev-secret',
-  postgresUrl: process.env.POSTGRES_URL || process.env.DATABASE_URL || null,
+  postgresUrl: process.env.POSTGRES_URL || null,
 };
 
 export default config;
