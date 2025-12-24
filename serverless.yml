@@ -11,8 +11,8 @@ provider:
   region: us-east-1
   runtime: nodejs20.x
   # Using existing LabRole to avoid role creation issues in the Learner Lab
-  role: arn:aws:iam::986945400171:role/LabRole
-  profile: fiap
+  role: arn:aws:iam::908171677883:role/LabRole
+  # profile: fiap
 
   environment:
     JWT_SECRET: ${env:JWT_SECRET}
