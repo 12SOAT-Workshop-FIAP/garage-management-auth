@@ -1,8 +1,15 @@
-import { Pool } from 'pg';
-import config from '../../infrastructure/config';
-import { IUser } from '../../domain/entities/user.entity';
+import { Pool } from "pg";
+import config from "../../infrastructure/config";
+import { IUser } from "../../domain/entities/user.entity";
 
-const pool = config.postgresUrl ? new Pool({ connectionString: config.postgresUrl }) : null;
+const pool = config.postgresUrl
+  ? new Pool({
+      connectionString: config.postgresUrl,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    })
+  : null;
 
 export async function ensureTable(): Promise<void> {
   // No-op: schema managed by monolith
@@ -11,7 +18,8 @@ export async function ensureTable(): Promise<void> {
 }
 
 export async function getUserById(userId: string): Promise<IUser | null> {
-  if (!pool) return null;
+  if (!pool)
+    throw new Error("Database connection string (POSTGRES_URL) is missing!");
   const { rows } = await pool.query(
     'SELECT id as "userId", name, email, cpf, password, "isActive", created_at as "createdAt", updated_at as "updatedAt" FROM users WHERE id = $1 LIMIT 1',
     [userId]
@@ -20,7 +28,8 @@ export async function getUserById(userId: string): Promise<IUser | null> {
 }
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {
-  if (!pool) return null;
+  if (!pool)
+    throw new Error("Database connection string (POSTGRES_URL) is missing!");
   const { rows } = await pool.query(
     'SELECT id as "userId", name, email, cpf, password, "isActive", created_at as "createdAt", updated_at as "updatedAt" FROM users WHERE email = $1 LIMIT 1',
     [email]

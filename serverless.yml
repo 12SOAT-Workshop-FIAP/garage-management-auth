@@ -4,6 +4,7 @@ service: workshop-auth
 useDotenv: true
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-offline
 
 provider:
