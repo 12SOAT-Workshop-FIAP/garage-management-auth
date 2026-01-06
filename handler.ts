@@ -28,10 +28,37 @@ function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
   }
 }
 
+async function cpfValidationMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
+  const cpf = req.headers['x-cpf'] as string;
+  
+  if (!cpf) {
+    return res.status(400).json({ error: 'CPF header (x-cpf) is required' });
+  }
+  
+  try {
+    // Buscar usuário pelo CPF
+    const userByCpf = await auth.getUserByCpf(cpf);
+    
+    if (!userByCpf) {
+      return res.status(404).json({ error: 'User with provided CPF not found' });
+    }
+    
+    // Verificar se o CPF pertence ao usuário autenticado
+    if (!req.user || req.user.sub !== userByCpf.userId) {
+      return res.status(403).json({ error: 'CPF does not belong to authenticated user' });
+    }
+    
+    return next();
+  } catch (err) {
+    console.error('CPF validation error:', err);
+    return res.status(500).json({ error: 'CPF validation failed' });
+  }
+}
+
 app.post('/register', async (req: Request, res: Response) => {
   try {
-    const { userId, name, email, password } = req.body || {};
-    const result = await auth.register({ userId, name, email, password });
+    const { userId, name, email, cpf, password } = req.body || {};
+    const result = await auth.register({ userId, name, email, cpf, password });
     return res.status(201).json(result);
   } catch (err: any) {
     if (err.code === 'ALREADY_EXISTS')
@@ -54,7 +81,7 @@ app.post('/login', async (req: Request, res: Response) => {
   }
 });
 
-app.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
+app.get('/me', authMiddleware, cpfValidationMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const u = await auth.getUserById(req.user!.sub as string);
     if (!u) return res.status(404).json({ error: 'User not found' });
