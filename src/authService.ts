@@ -20,6 +20,7 @@ interface RegisterInput {
   userId?: string;
   name?: string;
   email: string;
+  cpf?: string;
   password: string;
 }
 
@@ -33,6 +34,7 @@ export async function register({
   userId,
   name,
   email,
+  cpf,
   password,
 }: RegisterInput): Promise<RegisterOutput> {
   if (!email || !password) throw new Error('email and password required');
@@ -45,7 +47,7 @@ export async function register({
   // ID should follow monolith conventions (uuid). If not provided, generate a v4 uuid.
   const id = userId || uuidv4();
   const hashed = await bcrypt.hash(password, 10);
-  const user = { userId: id, name: name || null, email, password: hashed };
+  const user = { userId: id, name: name || null, email, cpf: cpf || null, password: hashed };
   await repo.createUser(user);
   return { userId: id, email, name: user.name };
 }
@@ -84,4 +86,8 @@ export async function login({ email, password }: LoginInput): Promise<LoginOutpu
 
 export async function getUserById(userId: string): Promise<IUser | null> {
   return await repo.getUserById(userId);
+}
+
+export async function getUserByCpf(cpf: string): Promise<IUser | null> {
+  return await repo.getUserByCpf(cpf);
 }
