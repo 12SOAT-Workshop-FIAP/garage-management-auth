@@ -76,7 +76,7 @@ export async function login({
   password,
   cpf,
 }: LoginInput): Promise<LoginOutput> {
-  if (!email || !cpf) throw new Error("Email or cpf its required");
+  if (!email && !cpf) throw new Error("Email or cpf its required");
   if (!password) throw new Error("Password required");
 
   const user = email ? await repo.getUserByEmail(email) : await repo.getUserByCpf(cpf);
