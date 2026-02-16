@@ -31,5 +31,6 @@ jobs:
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           SLS_STAGE: prod
         run: serverless deploy --stage prod --region ${{ secrets.AWS_REGION }}

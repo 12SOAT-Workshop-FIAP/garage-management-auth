@@ -13,7 +13,8 @@ provider:
   region: us-east-1
   runtime: nodejs20.x
   # Using existing LabRole to avoid role creation issues in the Learner Lab
-  role: arn:aws:iam::908171677883:role/LabRole
+  iam:
+    role: arn:aws:iam::${env:AWS_ACCOUNT_ID}:role/LabRole
   # profile: fiap
 
   environment:
