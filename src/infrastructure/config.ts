@@ -20,7 +20,7 @@ const config: Config = {
   authDb: 'postgres', // project uses Postgres only
   stage,
   usersTable: process.env.USERS_TABLE || `users-table-${stage}`,
-  jwtSecret: process.env.JWT_SECRET || 'dev-secret',
+  jwtSecret: process.env.JWT_SECRET || 'secret-key-1234',
   postgresUrl: process.env.POSTGRES_URL || null,
 };
 
